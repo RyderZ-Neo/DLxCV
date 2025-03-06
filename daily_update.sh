@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to repo
-cd /path/to/daily-progress || exit
+cd /Users/ana/Developer/CS231n || exit
 
 # Get today's date
 BRANCH_NAME=$(date +'%Y-%m-%d')
