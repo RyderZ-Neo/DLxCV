@@ -426,12 +426,13 @@ def reshape_practice(x: Tensor) -> Tensor:
     Returns:
         y: A reshaped version of x of shape (3, 8) as described above.
     """
-    y = None
+    # y = None
     ##########################################################################
     #                      TODO: Implement this function                     #
     ##########################################################################
     # Replace "pass" statement with your code
-    pass
+    x1 = x.view(2,-1,4) #(2,3,4) view = row major
+    y = x1.transpose(1,2).reshape(8,3).T
     ##########################################################################
     #                            END OF YOUR CODE                            #
     ##########################################################################
@@ -454,7 +455,7 @@ def zero_row_min(x: Tensor) -> Tensor:
         [2,  5,  0]
     ])
 
-    Your implementation shoud use reduction and indexing operations. You should
+    Your implementation should use reduction and indexing operations. You should
     not use any Python loops (including comprehensions). The input tensor
     should not be modified.
 
@@ -470,7 +471,12 @@ def zero_row_min(x: Tensor) -> Tensor:
     #                      TODO: Implement this function                     #
     ##########################################################################
     # Replace "pass" statement with your code
-    pass
+    # y2,idx = x.min(dim=1)
+    #get only indices of minimum value since y2 here is a waste
+    idx = torch.argmin(x,dim=1)
+    # idx = idx.tolist()
+    y = x.clone()
+    y[list(range(y.shape[0])),idx]=0
     ##########################################################################
     #                            END OF YOUR CODE                            #
     ##########################################################################
@@ -526,7 +532,9 @@ def batched_matrix_multiply_loop(x: Tensor, y: Tensor) -> Tensor:
     #                      TODO: Implement this function                      #
     ###########################################################################
     # Replace "pass" statement with your code
-    pass
+    z = torch.zeros(x.shape[0],x.shape[1],y.shape[2])
+    for i in range(x.shape[0]):
+        z[i] = torch.mm(x[i],y[i])
     ###########################################################################
     #                           END OF YOUR CODE                              #
     ###########################################################################
@@ -557,7 +565,7 @@ def batched_matrix_multiply_noloop(x: Tensor, y: Tensor) -> Tensor:
     #                      TODO: Implement this function                      #
     ###########################################################################
     # Replace "pass" statement with your code
-    pass
+    z = torch.bmm(x,y)
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -592,7 +600,12 @@ def normalize_columns(x: Tensor) -> Tensor:
     #                      TODO: Implement this function                     #
     ##########################################################################
     # Replace "pass" statement with your code
-    pass
+    y= torch.clone(x)
+    mean = y.sum(dim=0,keepdim=True)/y.shape[0]
+    # mean= y.mean(dim=0)
+    std = (((y-mean)**2).sum(dim=0,keepdim=True)/(y.shape[0]-1))**(1/2)
+    # std = y.std(dim=0)
+    y = (y-mean)/std
     ##########################################################################
     #                            END OF YOUR CODE                            #
     ##########################################################################
@@ -639,7 +652,11 @@ def mm_on_gpu(x: Tensor, w: Tensor) -> Tensor:
     #                      TODO: Implement this function                     #
     ##########################################################################
     # Replace "pass" statement with your code
-    pass
+    # x= x.to(device=torch.device("mps"))
+    # w= w.to(device =torch.device("mps"))
+    x= x.to("mps")
+    w= w.to("mps")
+    y= torch.mm(x,w).cpu()
     ##########################################################################
     #                            END OF YOUR CODE                            #
     ##########################################################################
